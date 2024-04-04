@@ -13,3 +13,9 @@ jobs:
             - name: upgrade pip
               working-directory: ./backend/
               run: python -m pip install --upgrade pip
+            - name: install requirements
+              working-directory: ./backend/
+              run: pip install -r requirements.txt
+            - name: run hello
+              working-directory: ./backend/
+              run: python hello.py
