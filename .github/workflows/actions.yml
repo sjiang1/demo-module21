@@ -5,7 +5,7 @@ on:
         branches:
             - 'main'
 jobs:
-    hello:
+    test:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -22,3 +22,20 @@ jobs:
             - name: test the backend
               working-directory: ./backend/
               run: pytest --cov
+    deploy:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: try ssh
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.KEY }}
+                port: ${{ secrets.PORT }}
+                script_stop: true
+                script: |
+                  eval "$(ssh-agent -s)"
+                  ssh-add ~/.ssh/github_ssh_key
+                  cd ~/deploy/
+                  git pull
